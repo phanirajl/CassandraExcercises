@@ -1,3 +1,5 @@
+package cql;
+
 import classes.Column;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
@@ -9,9 +11,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
 
@@ -29,10 +29,9 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
 
     @Test
     public void isVideosTableCreated() {
-        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube';");
+        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='videos';");
         List<Row> rows = result.all();
         assertThat(rows, hasSize(1));
-        assertThat(rows.get(0).getString("table_name"), is(equalTo("videos")));
     }
 
     @Test
@@ -46,13 +45,45 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
                         row.getString("type")))
                 .collect(Collectors.toList());
 
-        assertThat(columns, hasSize(5));
+        assertThat(columns, hasSize(6));
         assertThat(columns, containsInAnyOrder(
                 new Column("video_id", "none", "partition_key", "uuid"),
                 new Column("title", "none", "regular", "text"),
                 new Column("description", "none", "regular", "text"),
                 new Column("tags", "none", "regular", "set<text>"),
+                new Column("uploaded_by", "none", "regular", "uuid"),
                 new Column("upload_date", "none", "regular", "date")
         ));
     }
+
+    @Test
+    public void isUsersTableCreated() {
+        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='users';");
+        List<Row> rows = result.all();
+        assertThat(rows, hasSize(1));
+    }
+
+    @Test
+    public void usersTableHasCorrectColumns() {
+        ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'users';");
+        List<Column> columns = result.all().stream()
+                .map(row -> new Column(
+                        row.getString("column_name"),
+                        row.getString("clustering_order"),
+                        row.getString("kind"),
+                        row.getString("type")))
+                .collect(Collectors.toList());
+
+        assertThat(columns, hasSize(6));
+        assertThat(columns, containsInAnyOrder(
+                new Column("user_id", "none", "regular", "uuid"),
+                new Column("username", "none", "partition_key", "text"),
+                new Column("create_date", "none", "regular", "date"),
+                new Column("firstname", "none", "regular", "text"),
+                new Column("lastname", "none", "regular", "text"),
+                new Column("country", "none", "regular", "text")
+        ));
+    }
+
+
 }
