@@ -1,6 +1,10 @@
 package classes;
 
+import com.datastax.driver.core.ResultSet;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Column {
     private String column_name;
@@ -13,6 +17,16 @@ public class Column {
         this.clustering_order = clustering_order;
         this.kind = kind;
         this.type = type;
+    }
+
+    public static List<Column> fromResultSet(ResultSet resultSet) {
+        return resultSet.all().stream()
+                .map(row -> new Column(
+                        row.getString("column_name"),
+                        row.getString("clustering_order"),
+                        row.getString("kind"),
+                        row.getString("type")))
+                .collect(Collectors.toList());
     }
 
     @Override
