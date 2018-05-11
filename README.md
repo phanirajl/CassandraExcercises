@@ -1,0 +1,2 @@
+# CassandraExcercises
+Cassandra Practice Material
