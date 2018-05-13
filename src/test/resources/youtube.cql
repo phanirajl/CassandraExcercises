@@ -40,13 +40,4 @@ ADD likes set<frozen<user_opinion>>;
 
 
 -- Exercise 7 - Create yet another table
-CREATE TABLE youtube.comments (
-    comment_id timeuuid PRIMARY KEY,
-    video_id uuid,
-    user_name text,
-    user_id uuid,
-    comment text,
-    commented_by uuid,
-    comment_date date,
-    likes set<frozen<user_opinion>>
-);
+
