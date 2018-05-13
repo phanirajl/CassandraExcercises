@@ -119,7 +119,7 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
         ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'videos_by_user';");
         List<Column> columns = fromResultSet(result);
 
-        assertThat(columns, hasSize(8));
+        assertThat(columns, hasSize(7));
         assertThat(columns, containsInAnyOrder(
                 new Column("video_id", "asc", "clustering", "uuid"),
                 new Column("title", "none", "regular", "text"),
