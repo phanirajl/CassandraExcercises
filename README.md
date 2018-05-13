@@ -1,6 +1,8 @@
 Cassandra Practice Material
 ===================
 
+In order to complete the exercises, add the required cql commands to 'src/test/resources/youtube.cql'. Run 'mvn test' to check if your cql commands are correct.
+
 
 Exercise 1 - CQL | Create a keyspace
 
@@ -31,4 +33,4 @@ Exercise 4 - CQL | Alter a table
 
 Check-out exercise 2 with the following command: < git command >
 
-Alter the 'videos' table to store our the id of the user who uploaded it.   Run 'mvn test' to check if your script is correct.
+Alter the 'videos' table to store the id of the user who uploaded the video. Run 'mvn test' to check if your script is correct.
