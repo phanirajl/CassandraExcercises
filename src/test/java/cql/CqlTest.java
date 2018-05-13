@@ -156,7 +156,7 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
     }
 
     @Test
-    public void isCommentsByVideoTableCreated() {
+    public void isCommentsByVideoByDateTableCreated() {
         ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='comments_by_video_by_date';");
         List<Row> rows = result.all();
         assertThat(rows, hasSize(1));
@@ -167,10 +167,10 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
         ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'comments_by_video_by_date';");
         List<Column> columns = fromResultSet(result);
 
-        assertThat(columns, hasSize(7));
+        assertThat(columns, hasSize(8));
         assertThat(columns, containsInAnyOrder(
-                new Column("comment_id", "none", "partition_key", "timeuuid"),
-                new Column("video_id", "asc", "clustering", "uuid"),
+                new Column("comment_id", "asc", "clustering", "timeuuid"),
+                new Column("video_id", "none", "partition_key", "uuid"),
                 new Column("user_name", "none", "regular", "text"),
                 new Column("user_id", "none", "regular", "uuid"),
                 new Column("comment", "none", "regular", "text"),
