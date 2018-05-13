@@ -119,7 +119,7 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
         ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'videos_by_user';");
         List<Column> columns = fromResultSet(result);
 
-        assertThat(columns, hasSize(8));
+        assertThat(columns, hasSize(7));
         assertThat(columns, containsInAnyOrder(
                 new Column("video_id", "asc", "clustering", "uuid"),
                 new Column("title", "none", "regular", "text"),
@@ -128,6 +128,55 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
                 new Column("likes", "none", "regular", "set<frozen<user_opinion>>"),
                 new Column("uploaded_by", "none", "partition_key", "uuid"),
                 new Column("upload_date", "none", "regular", "date")
+        ));
+    }
+
+    @Test
+    public void isVideosByUserByDateTableCreated() {
+        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='videos_by_user_by_date';");
+        List<Row> rows = result.all();
+        assertThat(rows, hasSize(1));
+    }
+
+    @Test
+    public void videosByUserByDateHasCorrectColumns() {
+        ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'videos_by_user_by_date';");
+        List<Column> columns = fromResultSet(result);
+
+        assertThat(columns, hasSize(7));
+        assertThat(columns, containsInAnyOrder(
+                new Column("video_id", "none", "regular", "uuid"),
+                new Column("title", "none", "regular", "text"),
+                new Column("description", "none", "regular", "text"),
+                new Column("tags", "none", "regular", "set<text>"),
+                new Column("likes", "none", "regular", "set<frozen<user_opinion>>"),
+                new Column("uploaded_by", "none", "partition_key", "uuid"),
+                new Column("upload_date", "desc", "clustering", "date")
+        ));
+    }
+
+    @Test
+    public void isCommentsByVideoTableCreated() {
+        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='comments_by_video_by_date';");
+        List<Row> rows = result.all();
+        assertThat(rows, hasSize(1));
+    }
+
+    @Test
+    public void commentsByVideoByDateHasCorrectColumns() {
+        ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'comments_by_video_by_date';");
+        List<Column> columns = fromResultSet(result);
+
+        assertThat(columns, hasSize(7));
+        assertThat(columns, containsInAnyOrder(
+                new Column("comment_id", "none", "partition_key", "timeuuid"),
+                new Column("video_id", "asc", "clustering", "uuid"),
+                new Column("user_name", "none", "regular", "text"),
+                new Column("user_id", "none", "regular", "uuid"),
+                new Column("comment", "none", "regular", "text"),
+                new Column("commented_by", "none", "regular", "uuid"),
+                new Column("comment_date", "desc", "clustering", "date"),
+                new Column("likes", "none", "regular", "set<frozen<user_opinion>>")
         ));
     }
 }
