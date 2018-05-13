@@ -72,8 +72,9 @@ CREATE TABLE youtube.videos_by_user_by_date (
     likes set<frozen<user_opinion>>,
     upload_date date,
     uploaded_by uuid,
-    PRIMARY KEY ((uploaded_by), upload_date, video_id))
-    WITH CLUSERING ORDER BY (upload_date DESC);
+    PRIMARY KEY ((uploaded_by), upload_date, video_id)
+)
+WITH CLUSERING ORDER BY (upload_date DESC, video_id ASC);
 
 -- Exercise 10 - Even More clustering
 CREATE TABLE youtube.comments_by_video (
@@ -85,6 +86,7 @@ CREATE TABLE youtube.comments_by_video (
     commented_by uuid,
     comment_date date,
     likes set<frozen<user_opinion>>,
-    PRIMARY KEY ((video_id), commented_by))
-    WITH CLUSERING ORDER BY (upload_date DESC);
-);
+    PRIMARY KEY ((video_id), comment_date)
+)
+WITH CLUSERING ORDER BY (comment_date DESC);
+

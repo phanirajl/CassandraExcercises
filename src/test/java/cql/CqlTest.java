@@ -106,4 +106,28 @@ public class CqlTest extends AbstractCassandraUnit4CQLTestCase {
                 new Column("likes", "none", "regular", "set<frozen<user_opinion>>")
         ));
     }
+
+    @Test
+    public void isVideosByUserTableCreated() {
+        ResultSet result = getSession().execute("SELECT table_name FROM system_schema.tables WHERE keyspace_name='youtube' AND table_name='videos_by_user';");
+        List<Row> rows = result.all();
+        assertThat(rows, hasSize(1));
+    }
+
+    @Test
+    public void videosByUserHasCorrectColumns() {
+        ResultSet result = getSession().execute("SELECT * FROM system_schema.columns WHERE keyspace_name = 'youtube' AND table_name = 'videos_by_user';");
+        List<Column> columns = fromResultSet(result);
+
+        assertThat(columns, hasSize(8));
+        assertThat(columns, containsInAnyOrder(
+                new Column("video_id", "asc", "clustering", "uuid"),
+                new Column("title", "none", "regular", "text"),
+                new Column("description", "none", "regular", "text"),
+                new Column("tags", "none", "regular", "set<text>"),
+                new Column("likes", "none", "regular", "set<frozen<user_opinion>>"),
+                new Column("uploaded_by", "none", "partition_key", "uuid"),
+                new Column("upload_date", "none", "regular", "date")
+        ));
+    }
 }
